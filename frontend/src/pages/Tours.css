@@ -1,0 +1,70 @@
+.tours-page {
+  padding: 50px 0 70px;
+}
+
+.tours-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.tours-kicker {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+.tours-header h1 {
+  font-size: clamp(34px, 4vw, 52px);
+  margin-bottom: 10px;
+}
+
+.tours-header p {
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.tours-filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 22px;
+  margin-bottom: 30px;
+  background: var(--surface);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+}
+
+.tours-input,
+.tours-select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 15px;
+  background: var(--surface-solid);
+  color: var(--text);
+}
+
+.tours-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 26px;
+}
+
+.tours-message {
+  text-align: center;
+  color: var(--muted);
+  padding: 30px 0;
+}
+
+.tours-message.error {
+  color: #dc2626;
+}
+
+@media (max-width: 900px) {
+  .tours-filters {
+    grid-template-columns: 1fr;
+  }
+}
