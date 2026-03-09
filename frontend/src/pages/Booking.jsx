@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Button from "../components/Button";
 import { formatCurrency } from "../utils/formatCurrency";
+import "./Booking.css";
 
 export default function Booking() {
   const { tourId } = useParams();
@@ -38,9 +39,10 @@ export default function Booking() {
     phone: yup.string().required("Phone required"),
     numberOfGuests: yup
       .number()
+      .typeError("Must be a number")
       .min(1, "At least one guest")
       .required(),
-    bookingDate: yup.date().required("Date required"),
+    bookingDate: yup.string().required("Date required"),
     specialRequests: yup.string(),
   });
 
@@ -64,7 +66,6 @@ export default function Booking() {
         status: "pending",
       };
       await api.post("/bookings", payload);
-      // Simple success UI – you could show a modal
       alert("Booking confirmed! Check your email for details.");
       navigate("/tours");
     } catch (e) {
@@ -74,79 +75,109 @@ export default function Booking() {
     }
   };
 
-  if (loadingTour) return <p className="p-6 text-center">Loading tour…</p>;
-  if (error) return <p className="p-6 text-center text-red-600">{error}</p>;
+  if (loadingTour) return <div className="page-shell text-center"><p className="p-6">Loading tour…</p></div>;
+  if (error) return <div className="page-shell text-center text-red-600"><p className="p-6">{error}</p></div>;
 
   return (
-    <section className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">
-        Book: {tour.title}
-      </h1>
+    <section className="booking-page">
+      <div className="page-shell">
+        <div className="booking-header">
+          <span className="booking-kicker">Secure your spot</span>
+          <h1>Book: {tour.title}</h1>
+          <p>Complete the form below to finalize your adventure.</p>
+        </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <input
-          placeholder="Full Name"
-          {...register("fullName")}
-          className="border rounded p-2 w-full"
-        />
-        {errors.fullName && (
-          <p className="text-red-600 text-sm">{errors.fullName.message}</p>
-        )}
+        <div className="booking-card">
+          <form onSubmit={handleSubmit(onSubmit)} className="booking-form">
+            <div className="booking-row">
+              <label htmlFor="fullName">Full Name</label>
+              <input
+                id="fullName"
+                placeholder="Enter your full name"
+                {...register("fullName")}
+                className="booking-input"
+              />
+              {errors.fullName && (
+                <p className="booking-error">{errors.fullName.message}</p>
+              )}
+            </div>
 
-        <input
-          placeholder="Email"
-          type="email"
-          {...register("email")}
-          className="border rounded p-2 w-full"
-        />
-        {errors.email && (
-          <p className="text-red-600 text-sm">{errors.email.message}</p>
-        )}
+            <div className="booking-row">
+              <label htmlFor="email">Email Address</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="Email for confirmation"
+                {...register("email")}
+                className="booking-input"
+              />
+              {errors.email && (
+                <p className="booking-error">{errors.email.message}</p>
+              )}
+            </div>
 
-        <input
-          placeholder="Phone"
-          {...register("phone")}
-          className="border rounded p-2 w-full"
-        />
-        {errors.phone && (
-          <p className="text-red-600 text-sm">{errors.phone.message}</p>
-        )}
+            <div className="booking-row">
+              <label htmlFor="phone">Phone Number</label>
+              <input
+                id="phone"
+                placeholder="Phone number"
+                {...register("phone")}
+                className="booking-input"
+              />
+              {errors.phone && (
+                <p className="booking-error">{errors.phone.message}</p>
+              )}
+            </div>
 
-        <input
-          placeholder="Number of Guests"
-          type="number"
-          min={1}
-          {...register("numberOfGuests")}
-          className="border rounded p-2 w-full"
-        />
-        {errors.numberOfGuests && (
-          <p className="text-red-600 text-sm">{errors.numberOfGuests.message}</p>
-        )}
+            <div className="booking-row">
+              <label htmlFor="numberOfGuests">Number of Guests</label>
+              <input
+                id="numberOfGuests"
+                type="number"
+                min={1}
+                {...register("numberOfGuests")}
+                className="booking-input"
+              />
+              {errors.numberOfGuests && (
+                <p className="booking-error">{errors.numberOfGuests.message}</p>
+              )}
+            </div>
 
-        <input
-          type="date"
-          {...register("bookingDate")}
-          className="border rounded p-2 w-full"
-        />
-        {errors.bookingDate && (
-          <p className="text-red-600 text-sm">{errors.bookingDate.message}</p>
-        )}
+            <div className="booking-row">
+              <label htmlFor="bookingDate">Travel Date</label>
+              <input
+                id="bookingDate"
+                type="date"
+                {...register("bookingDate")}
+                className="booking-input"
+              />
+              {errors.bookingDate && (
+                <p className="booking-error">{errors.bookingDate.message}</p>
+              )}
+            </div>
 
-        <textarea
-          placeholder="Special requests (optional)"
-          rows={3}
-          {...register("specialRequests")}
-          className="border rounded p-2 w-full"
-        />
+            <div className="booking-row">
+              <label htmlFor="specialRequests">Special Requests</label>
+              <textarea
+                id="specialRequests"
+                placeholder="Any special needs or preferences? (optional)"
+                {...register("specialRequests")}
+                className="booking-textarea"
+              />
+            </div>
 
-        <p className="font-semibold">
-          Total Price: <span className="text-primary-gradient">{formatCurrency(totalPrice)}</span>
-        </p>
+            <div className="booking-total">
+              Total Price: <span>{formatCurrency(totalPrice)}</span>
+            </div>
 
-        <Button variant="primary" type="submit" disabled={submitting}>
-          {submitting ? "Booking…" : "Confirm Booking"}
-        </Button>
-      </form>
+            <div className="booking-submit">
+              <Button variant="primary" type="submit" disabled={submitting} fullWidth>
+                {submitting ? "Booking…" : "Confirm Booking"}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
     </section>
   );
 }
